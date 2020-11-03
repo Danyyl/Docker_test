@@ -3,15 +3,15 @@ import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework_jwt.settings import api_settings
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from django.core.mail import send_mail
 from django.contrib.auth.models import User
 
 from my_test import models
 from my_test import serializers
+from my_test.tasks import my_send_mail
 
 from .paginators import StandartPagination
 
@@ -32,16 +32,10 @@ class Authenticate(APIView):
             email = request.data['email']
             user = User.objects.get(email=email)
             if user:
-                try:
-                    logging.warning("yes? i do it")
-                    payload = jwt_payload_handler(user)
-                    token = jwt_encode_handler(payload)
-                    send_mail('tokens', token, 'danyyl_l@ukr.net', [email], fail_silently=False, auth_user='danyyl_l@ukr.net', auth_password='kj,tyrj9',
-                              connection=None, html_message=None)
-                    return Response({'result': 'Done'})
-
-                except Exception as e:
-                    raise e
+                payload = jwt_payload_handler(user)
+                token = jwt_encode_handler(payload)
+                my_send_mail.delay(email, token)
+                return Response(status=status.HTTP_200_OK)
             else:
                 res = {
                     'error': 'can not authenticate with the given credentials or the account has been deactivated'}
