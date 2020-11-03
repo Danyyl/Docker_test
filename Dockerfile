@@ -17,4 +17,4 @@ COPY ./Test_backend/entrypoint.sh .
 # copy project
 COPY . .
 # run entrypoint.sh
-ENTRYPOINT ["./Test_backend/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
