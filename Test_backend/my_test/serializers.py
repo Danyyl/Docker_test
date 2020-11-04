@@ -31,13 +31,6 @@ class StatusSerializer(serializers.ModelSerializer):
         model = models.Status
         fields = ['status']
 
-    def create(self, valid_data):
-        status = models.Status.objects.create(
-            status=valid_data['status'],
-        )
-        status.save()
-        return status
-
 
 class CompanySerializer(serializers.ModelSerializer):
     departments = serializers.SerializerMethodField()
@@ -46,13 +39,6 @@ class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Company
         fields = ['name', 'departments', 'all_employees']
-
-    def create(self, valid_data):
-        company = models.Company.objects.create(
-            name=valid_data['name'],
-        )
-        company.save()
-        return company
 
     def get_departments(self, obj):
         return obj.departments.count()
@@ -72,15 +58,6 @@ class DepartmentSerializer(serializers.ModelSerializer):
         model = models.Department
         fields = ['name', 'company', 'all_department', 'all_employees']
 
-    def create(self, valid_data):
-        company = models.Company.objects.get(id=valid_data['company_id'])
-        department = models.Department.objects.create(
-            name=valid_data['name'],
-            company=company,
-        )
-        department.save()
-        return department
-
     def get_all_department(self, obj):
         return models.Department.objects.all().count()
 
@@ -94,19 +71,6 @@ class EmployeesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Employees
         fields = ['first_name', 'last_name', 'email', 'status', 'department']
-
-    def create(self, valid_data):
-        department = models.Department.objects.get(id=valid_data['department_id'])
-        status = models.Status.objects.get(id=valid_data['status_id'])
-        employees = models.Employees.objects.create(
-            first_name=valid_data['first_name'],
-            last_name=valid_data['last_name'],
-            email=valid_data['email'],
-            status=status,
-            department=department,
-        )
-        employees.save()
-        return employees
 
     def get_status(self, obj):
         return StatusSerializer(obj.status).data

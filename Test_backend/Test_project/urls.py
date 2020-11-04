@@ -24,5 +24,6 @@ router = DefaultRouter()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('my_test.urls')),
-    path('', views.Authenticate.as_view(), name='index')
+    path('', views.Authenticate.as_view(), name='index'),
+    path('registr/', views.Registration.as_view(), name='registr')
 ]
