@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 import datetime
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'my_test.apps.MyTestConfig',
     'corsheaders',
+    'django_celery_beat',
 
 ]
 
@@ -100,6 +103,8 @@ REDIS_PORT = os.environ.get("REDIS_PORT", '6379')
 BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+
+
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

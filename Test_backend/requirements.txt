@@ -10,3 +10,4 @@ pytz==2020.4
 sqlparse==0.4.1
 celery==5.0.0
 redis==3.5.3
+django_celery_beat

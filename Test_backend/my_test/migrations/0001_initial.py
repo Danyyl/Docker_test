@@ -3,6 +3,24 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+
+
+def set_superuser(apps, schema_editor):
+    user_obj = apps.get_model(*settings.AUTH_USER_MODEL.split('.'))
+    user = user_obj(
+        id=0,
+        username='user',
+        email='user@mail.com',
+        first_name='User',
+        last_name='Admin',
+        is_staff=True,
+        is_active=True,
+        is_superuser=True,
+    )
+    user.password = make_password('pass')
+    user.save()
 
 
 class Migration(migrations.Migration):
@@ -56,4 +74,5 @@ class Migration(migrations.Migration):
                 ('status', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='my_test.status')),
             ],
         ),
+        migrations.RunPython(set_superuser),
     ]
